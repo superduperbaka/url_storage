@@ -1,0 +1,26 @@
+version: '3.4'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile-backend
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    ports:
+    - '127.0.0.1:8000:8000'
+    environment:
+      POSTGRES_HOST: 'db'
+
+  db:
+    image: postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_PASSWORD: somefancypass
+    volumes:
+      - type: volume
+        source: pg_data
+        target: /var/lib/postgresql/data
+
+volumes:
+  pg_data:
+    name: url_storage_pg_data

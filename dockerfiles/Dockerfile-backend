@@ -1,0 +1,14 @@
+FROM fedora:33
+RUN dnf install -y gcc gcc-c++ redhat-rpm-config python3-devel
+RUN useradd --shell /sbin/nologin -u 9000 backend_user
+WORKDIR /home/backend_user
+USER backend_user
+RUN python3 -m venv venv
+ENV PATH="/home/backend_user/venv/bin:$PATH"
+ENV VIRTUAL_ENV="/home/backend_user/venv"
+COPY --chown=backend_user:backend_user requirements.txt .
+RUN pip3 install -r requirements.txt
+COPY --chown=backend_user:backend_user backend backend
+COPY --chown=backend_user:backend_user alembic alembic
+COPY --chown=backend_user:backend_user alembic.ini alembic.ini
+
